@@ -1,0 +1,14 @@
+# Serve all text-based assets as UTF-8.
+# This prevents emoji and multilingual text from appearing as mojibake
+# such as ðŸ“š or ðŸ›¡ï¸.
+AddDefaultCharset UTF-8
+
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .htm .css .js .json .txt
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html?|css|js|json|txt)$">
+        Header set Content-Type "text/html; charset=UTF-8" env=REDIRECT_STATUS
+    </FilesMatch>
+</IfModule>
