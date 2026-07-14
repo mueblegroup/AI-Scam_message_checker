@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scam Checker AI</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body{
+            margin:0;
+            font-family:'Poppins', Arial;
+            background: radial-gradient(circle at top,#1e293b,#0f172a,#050814);
+            color:white;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn{
+            from{opacity:0; transform:scale(0.98);}
+            to{opacity:1; transform:scale(1);}
+        }
+
+        .nav{
+            display:flex;
+            justify-content:space-between;
+            padding:18px 25px;
+            background:#0b1220;
+            position:sticky;
+            top:0;
+        }
+
+        .nav a{
+            color:white;
+            text-decoration:none;
+            margin-left:15px;
+            transition:0.2s;
+        }
+
+        .nav a:hover{
+            color:#22c55e;
+        }
+
+        .card{
+            width:420px;
+            background:rgba(255,255,255,0.06);
+            backdrop-filter:blur(12px);
+            padding:25px;
+            border-radius:18px;
+            text-align:center;
+        }
+
+        .center{
+            display:flex;
+            justify-content:center;
+            margin-top:70px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        textarea{
+            width:100%;
+            height:120px;
+            padding:10px;
+            border-radius:8px;
+            border:none;
+            outline:none;
+        }
+
+        button{
+            margin-top:15px;
+            padding:12px 20px;
+            background:#22c55e;
+            border:none;
+            border-radius:10px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.2s;
+            color:white;
+        }
+
+        button:hover{
+            transform:scale(1.05);
+        }
+
+        /* chatbot */
+        #chatbotBox{
+            position:fixed;
+            bottom:20px;
+            right:20px;
+            width:280px;
+            background:#1f2937;
+            border-radius:15px;
+            padding:15px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* NEXT BUTTON SECTION */
+        .next-step{
+            margin-top:30px;
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav">
+    <div><b>🛡️ ScamShield AI</b></div>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="checker.html">Checker</a>
+        <a href="about.html">About</a>
+        <a href="learn.html">Learn</a>
+    </div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="center">
+
+<div class="card">
+
+    <h2>🔍 AI Scam Detector</h2>
+
+    <textarea id="message" placeholder="Paste message here..."></textarea>
+
+    <button onclick="checkScam()">Analyze Message</button>
+
+    <p id="loading" style="color:#facc15; display:none;">⏳ AI is analyzing your message...</p>
+
+    <h3 id="result"></h3>
+    <p id="score"></p>
+    <p id="explain" style="color:#cbd5e1;"></p>
+
+</div>
+
+<!-- ✅ ADDED NEXT BUTTON -->
+<div class="next-step">
+    <a href="about.html">
+        <button>Next: About Scams</button>
+    </a>
+</div>
+
+</div>
+
+<!-- CHATBOT UI -->
+<div id="chatbotBox">
+
+<div style="font-weight:bold; margin-bottom:10px;">🤖 ScamShield AI</div>
+
+<div id="chatlog" style="height:120px; overflow:auto; font-size:13px; color:#cbd5e1;"></div>
+
+<input id="userInput" placeholder="Ask AI..." style="width:100%; padding:8px; margin-top:10px; border-radius:8px; border:none;">
+
+<button onclick="chatAI()" style="width:100%; margin-top:8px;">
+Send
+</button>
+
+</div>
+
+<script>
+
+function checkScam() {
+
+    let msg = document.getElementById("message").value.toLowerCase();
+
+    let result = document.getElementById("result");
+    let score = document.getElementById("score");
+    let explain = document.getElementById("explain");
+    let loading = document.getElementById("loading");
+
+    result.innerHTML = "";
+    score.innerHTML = "";
+    explain.innerHTML = "";
+
+    loading.style.display = "block";
+
+    setTimeout(() => {
+
+        loading.style.display = "none";
+
+        let risk = 0;
+        let reasons = [];
+
+        if (msg.includes("bank")) { risk += 25; reasons.push("bank keyword"); }
+        if (msg.includes("otp")) { risk += 30; reasons.push("OTP request"); }
+        if (msg.includes("click")) { risk += 20; reasons.push("suspicious link"); }
+        if (msg.includes("urgent")) { risk += 20; reasons.push("urgency"); }
+        if (msg.includes("akaun")) { risk += 25; reasons.push("BM bank keyword"); }
+        if (msg.includes("klik")) { risk += 20; reasons.push("BM link"); }
+        if (msg.includes("segera")) { risk += 20; reasons.push("BM urgency"); }
+
+        let status = "";
+        let color = "";
+
+        if (risk >= 60) {
+            status = "⚠️ HIGH RISK SCAM DETECTED";
+            color = "#ef4444";
+        } else if (risk >= 30) {
+            status = "⚠️ POSSIBLE SCAM DETECTED";
+            color = "#f59e0b";
+        } else {
+            status = "✅ MESSAGE LOOKS SAFE";
+            color = "#22c55e";
+        }
+
+        result.innerHTML = status;
+        result.style.color = color;
+
+        score.innerHTML = "Confidence Score: " + risk + "/100";
+        explain.innerHTML = "AI detected: " + reasons.join(", ");
+
+    }, 1200);
+}
+
+/* CHAT AI */
+function chatAI(){
+
+let input = document.getElementById("userInput").value.toLowerCase();
+let chatlog = document.getElementById("chatlog");
+
+chatlog.innerHTML += "<div><b>You:</b> " + input + "</div>";
+
+let reply = "";
+
+if(input.includes("scam")){
+    reply = "This system detects scams using keywords + risk scoring.";
+}
+else if(input.includes("otp")){
+    reply = "Never share OTP. Banks will NEVER ask for it.";
+}
+else if(input.includes("hello") || input.includes("hi")){
+    reply = "Hello 👋 I am ScamShield AI. I can help you detect scams.";
+}
+else{
+    reply = "I can help detect scam messages or explain security risks.";
+}
+
+chatlog.innerHTML += "<div><b>AI:</b> " + reply + "</div>";
+
+document.getElementById("userInput").value = "";
+
+chatlog.scrollTop = chatlog.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
