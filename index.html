@@ -12,38 +12,30 @@ main{width:min(1180px,calc(100% - 32px));margin:auto;padding:clamp(40px,7vw,92px
 <nav class="nav"><a class="brand" href="index.html"><span class="mark"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 19 6v5c0 4.7-2.9 8.1-7 10-4.1-1.9-7-5.3-7-10V6l7-3Z" stroke="#42dc8b" stroke-width="1.8"/><path d="m9.2 12 1.8 1.8 3.9-4" stroke="#42dc8b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>ScamShield AI</span></a><div class="navlinks"><a class="active" href="index.html">Home</a><a href="checker.html">Checker</a><a href="learn.html">Learn</a><a href="about.html">About</a></div></nav>
 <main><section class="hero"><div><div class="eyebrow">Built for suspicious messages</div><h1>Pause. Check. Protect yourself.</h1><p>Review unexpected SMS, WhatsApp and social messages before you click, reply or send money.</p><div class="actions"><button class="btn primary" id="enterSystem">Enter scam checker →</button><a class="btn secondary" href="learn.html">Learn the warning signs</a></div><div class="voice-status" id="voiceStatus" aria-live="polite"></div></div><div class="visual"><div class="phone"><div class="phone-top"><span>Unknown sender</span><span>10:42 AM</span></div><div class="message">RHB Personal Financing-i 30k–150k available. Reply YES if keen.</div><div class="scan"><strong>Likely unsolicited financial promotion</strong><span>Possible bulk solicitation or bank impersonation.</span><div class="meter"></div></div></div></div></section><section class="trust"><div class="trust-card"><strong>English + Bahasa Malaysia</strong><p>Checks wording used in local scam and spam messages.</p></div><div class="trust-card"><strong>More than keywords</strong><p>Combines requests, pressure, links and context.</p></div><div class="trust-card"><strong>Private by design</strong><p>Analysis runs locally inside your browser.</p></div></section></main>
 <script>
-const enterButton=document.getElementById('enterSystem'),voiceStatus=document.getElementById('voiceStatus');
-const welcomeText='Hi, welcome to ScamShield AI. I am your security assistant. Let us check the message before you click, reply, or pay.';
-let welcomePlayed=false;
-function speakWelcome({navigate=false}={}){
- const go=()=>{if(!navigate)return;document.body.classList.add('page-leaving');setTimeout(()=>location.href='checker.html',500)};
- if(!('speechSynthesis' in window)){go();return false}
- speechSynthesis.cancel();
- const speech=new SpeechSynthesisUtterance(welcomeText);
- speech.rate=.98;speech.pitch=1;speech.volume=1;
- let completed=false;
- const finish=()=>{if(completed)return;completed=true;welcomePlayed=true;voiceStatus.textContent=navigate?'Opening the checker…':'Voice welcome completed.';go()};
- speech.onstart=()=>{voiceStatus.textContent='Voice welcome is playing…'};
- speech.onend=finish;
- speech.onerror=()=>{voiceStatus.textContent='Your browser blocked automatic voice. Tap Enter scam checker to hear it.';if(navigate)go()};
- speechSynthesis.speak(speech);
- setTimeout(()=>{if(!speechSynthesis.speaking&&!completed){voiceStatus.textContent='Your browser blocked automatic voice. Tap Enter scam checker to hear it.'}},1200);
- if(navigate){
-  const safetyTimer=setTimeout(()=>{
-   if(completed)return;
-   if(speechSynthesis.speaking||speechSynthesis.pending){
-    voiceStatus.textContent='Finishing the voice welcome…';
-    return;
-   }
-   finish();
-  },20000);
-  speech.onend=()=>{clearTimeout(safetyTimer);finish()};
-  speech.onerror=()=>{clearTimeout(safetyTimer);voiceStatus.textContent='Voice playback was interrupted. Opening the checker…';finish()};
- }
- return true;
+function speakWelcome() {
+    let msg = new SpeechSynthesisUtterance(
+        "Hi, welcome to ScamShield AI. I am your AI assistant. How can I help you today?"
+    );
+
+    msg.rate = 1;
+    msg.pitch = 1;
+    msg.volume = 1;
+
+    speechSynthesis.speak(msg);
 }
-window.addEventListener('load',()=>{setTimeout(()=>{if(document.visibilityState==='visible'&&!welcomePlayed)speakWelcome()},2200)});
-enterButton.addEventListener('click',()=>speakWelcome({navigate:true}));
+
+function startSystem() {
+    speakWelcome();
+
+    setTimeout(() => {
+        document.body.classList.add('page-leaving');
+        setTimeout(() => {
+            window.location.href = "checker.html";
+        }, 500);
+    }, 2500);
+}
+
+document.getElementById('enterSystem').addEventListener('click', startSystem);
 </script><script>
 (function(){
  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
