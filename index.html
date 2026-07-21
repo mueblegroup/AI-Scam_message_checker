@@ -26,14 +26,14 @@ function speakWelcome() {
 
 function startSystem() {
     speakWelcome();
-    document.getElementById('voiceStatus').textContent = 'Voice introduction is playing. The checker will open in about 20 seconds…';
+    document.getElementById('voiceStatus').textContent = 'Voice introduction is playing. The checker will open in about 30 seconds…';
 
     setTimeout(() => {
         document.body.classList.add('page-leaving');
         setTimeout(() => {
             window.location.href = "checker.html";
         }, 500);
-    }, 20000);
+    }, 30000);
 }
 
 document.getElementById('enterSystem').addEventListener('click', startSystem);
