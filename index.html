@@ -28,7 +28,18 @@ function speakWelcome({navigate=false}={}){
  speech.onerror=()=>{voiceStatus.textContent='Your browser blocked automatic voice. Tap Enter scam checker to hear it.';if(navigate)go()};
  speechSynthesis.speak(speech);
  setTimeout(()=>{if(!speechSynthesis.speaking&&!completed){voiceStatus.textContent='Your browser blocked automatic voice. Tap Enter scam checker to hear it.'}},1200);
- if(navigate)setTimeout(finish,7000);
+ if(navigate){
+  const safetyTimer=setTimeout(()=>{
+   if(completed)return;
+   if(speechSynthesis.speaking||speechSynthesis.pending){
+    voiceStatus.textContent='Finishing the voice welcome…';
+    return;
+   }
+   finish();
+  },20000);
+  speech.onend=()=>{clearTimeout(safetyTimer);finish()};
+  speech.onerror=()=>{clearTimeout(safetyTimer);voiceStatus.textContent='Voice playback was interrupted. Opening the checker…';finish()};
+ }
  return true;
 }
 window.addEventListener('load',()=>{setTimeout(()=>{if(document.visibilityState==='visible'&&!welcomePlayed)speakWelcome()},2200)});
