@@ -14,7 +14,7 @@ main{width:min(1180px,calc(100% - 32px));margin:auto;padding:clamp(40px,7vw,92px
 <script>
 function speakWelcome() {
     let msg = new SpeechSynthesisUtterance(
-        "Hi, welcome to ScamShield AI. I am your AI security assistant. I will help you review suspicious messages for common scam, phishing, impersonation, loan, delivery, and fraud warning signs."
+        "Hi, welcome to ScamShield AI. I am your AI security assistant. I will help you review suspicious messages for common scam, and fraud warning signs."
     );
 
     msg.rate = 0.88;
@@ -26,14 +26,14 @@ function speakWelcome() {
 
 function startSystem() {
     speakWelcome();
-    document.getElementById('voiceStatus').textContent = 'Voice introduction is playing. The checker will open in about 30 seconds…';
+    document.getElementById('voiceStatus').textContent = 'Voice introduction is playing. The checker will open in about 10 seconds…';
 
     setTimeout(() => {
         document.body.classList.add('page-leaving');
         setTimeout(() => {
             window.location.href = "checker.html";
         }, 500);
-    }, 20000);
+    }, 12000);
 }
 
 document.getElementById('enterSystem').addEventListener('click', startSystem);
