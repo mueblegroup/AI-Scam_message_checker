@@ -1,0 +1,6 @@
+# Serve text files as UTF-8 so emoji and multilingual content render correctly.
+AddDefaultCharset UTF-8
+
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .htm .css .js .json .txt
+</IfModule>
